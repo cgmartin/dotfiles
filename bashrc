@@ -145,6 +145,20 @@ alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
 httpHeaders () { /usr/bin/curl -I -L $@ ; }
 httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
+# Docker Utils
+# ---------------------------------------------------------------------
+alias denv='eval "$(docker-machine env dev)"'
+alias drmStopped='docker rm -v $(docker ps -a -q -f status=exited)'
+alias drmiUntagged='docker rmi $(docker images -q -f dangling=true)'
+alias drmiAll='docker rmi $(docker images -q)'
+alias dimgDeps='docker images -viz | dot -Tpng -o docker.png'
+alias dstats='docker stats $(docker ps -q)'
+function dimgEnv {
+    docker run --rm "$1" env
+}
+
+denv
+
 # Mark Directories
 # ---------------------------------------------------------------------
 export MARKPATH=$HOME/.marks

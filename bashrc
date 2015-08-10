@@ -147,17 +147,23 @@ httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect
 
 # Docker Utils
 # ---------------------------------------------------------------------
-alias denv='eval "$(docker-machine env dev)"'
+alias d='docker'
+alias b2d='boot2docker'
+alias dm='docker-machine'
+alias ds='docker-swarm'
+
+dme() { eval "$(docker-machine env $1)"; }
+dmes() { eval "$(docker-machine env --swarm $1)"; }
+
 alias drmStopped='docker rm -v $(docker ps -a -q -f status=exited)'
 alias drmiUntagged='docker rmi $(docker images -q -f dangling=true)'
 alias drmiAll='docker rmi $(docker images -q)'
-alias dimgDeps='docker images -viz | dot -Tpng -o docker.png'
-alias dstats='docker stats $(docker ps -q)'
+alias docker-stats='docker stats $(docker ps -q)'
+alias docker-clean='echo "Cleaning stopped containers..."; drmStopped 2>/dev/null; echo "Cleaning untagged images..."; drmiUntagged 2>/dev/null'
+alias docker-clean-all='docker-clean; echo "Cleaning all images..."; drmiAll 2>/dev/null'
 function dimgEnv {
     docker run --rm "$1" env
 }
-
-denv
 
 # Mark Directories
 # ---------------------------------------------------------------------

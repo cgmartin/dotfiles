@@ -111,7 +111,6 @@ function skip {
     cut -d' ' -f$n-
 }
 
-alias jump='ssh MGMTPROD\\martc342@qn7prlts01.starwave.com'
 alias npmb='npm --registry=https://registry.npmjs.org/'
 alias nbi='npm install && bower install'
 alias make1mb='mkfile 1m ./1MB.dat'

@@ -43,8 +43,15 @@ fi
 
 # History
 # ---------------------------------------------------------------------
-export HISTCONTROL=ignoredups:erasedups 
+export HISTCONTROL=ignoredups:erasedups
+export HISTSIZE=100000
+export HISTFILESIZE=100000
 shopt -s histappend
+
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+bind '"\eOA": history-search-backward'
+bind '"\eOB": history-search-forward'
 
 # Prompt
 # ---------------------------------------------------------------------
@@ -64,11 +71,18 @@ PS1+='$(
     else
         echo "'$C_GREEN'"
     fi
-)$(__git_ps1)'
-PS1+="$C_RESET \$ "
+)$(__git_ps1)$(echo "'$C_RESET'")'
+PS1+='$(
+    if [ ! -z "$DOCKER_MACHINE_NAME" ]; then
+        echo " '$C_DARKGRAY'[$DOCKER_MACHINE_NAME]'$C_RESET'"
+    fi
+)'
+PS1+=" \$ "
 export PS1
 
-export PROMPT_COMMAND='echo -ne "\033]0;${USER}@mbp: ${PWD/#${HOME}/~}\007"'
+PROMPT_COMMAND="history -a; history -c; history -r;"     # save and reload history after each command
+PROMPT_COMMAND+='echo -ne "\033]0;${USER}@mbp: ${PWD/#${HOME}/~}\007";'
+export PROMPT_COMMAND
 
 # Set VI Editor
 # ---------------------------------------------------------------------

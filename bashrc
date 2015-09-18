@@ -161,22 +161,23 @@ httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect
 # Docker Utils
 # ---------------------------------------------------------------------
 alias d='docker'
-alias b2d='boot2docker'
-alias dm='docker-machine'
-alias ds='docker-swarm'
-
-dme() { eval "$(docker-machine env $1)"; }
-dmes() { eval "$(docker-machine env --swarm $1)"; }
-
 alias drmStopped='docker rm -v $(docker ps -a -q -f status=exited)'
 alias drmiUntagged='docker rmi $(docker images -q -f dangling=true)'
 alias drmiAll='docker rmi $(docker images -q)'
-alias docker-stats='docker stats $(docker ps -q)'
-alias docker-clean='echo "Cleaning stopped containers..."; drmStopped 2>/dev/null; echo "Cleaning untagged images..."; drmiUntagged 2>/dev/null'
-alias docker-clean-all='docker-clean; echo "Cleaning all images..."; drmiAll 2>/dev/null'
-function dimgEnv {
-    docker run --rm "$1" env
-}
+alias dstats='docker stats $(docker ps -q)'
+alias dclean='echo "Cleaning stopped containers..."; drmStopped 2>/dev/null; echo "Cleaning untagged images..."; drmiUntagged 2>/dev/null'
+alias dcleanAll='dclean; echo "Cleaning all images..."; drmiAll 2>/dev/null'
+function dexec() { docker exec -it "$1" ${2:-bash}; }
+function drun() { docker run --rm "$1" env; }
+
+# docker machine 
+alias dm='docker-machine'
+alias ds='docker-swarm'
+alias dmunset='unset DOCKER_HOST DOCKER_MACHINE_IP DOCKER_MACHINE_NAME DOCKER_TLS_VERIFY DOCKER_CERT_PATH'
+dmip() { export DOCKER_MACHINE_IP=$(docker-machine ip $DOCKER_MACHINE_NAME); echo $DOCKER_MACHINE_IP; }
+dme() { eval "$(docker-machine env $1)"; }
+dmes() { eval "$(docker-machine env --swarm $1)"; }
+dmstop() { docker-machine stop ${1-$DOCKER_MACHINE_NAME} && dmunset; }
 
 # Mark Directories
 # ---------------------------------------------------------------------
